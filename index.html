@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Kementerian Kesehatan RI</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link rel="shortcut icon" type="image/x-icon" href="kemkes.png" />
+
+  <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+      <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+      <script type="text/javascript" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+      <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+      <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  
+</head>
+<body>
+
+  <div id="index-banner" class="parallax-container">
+    <div class="section no-pad-bot">
+      <div class="container">
+
+      </div>
+    </div>
+    <div class="parallax"><img src="background_web_perlindungan_data_pribadi.png" alt="Unsplashed background img 1"></div>
+  </div>
+  <div class="container">
+    <div class="section">
+      
+      <!--   Icon Section   -->
+      <div class="row">
+        <div class="row">
+          <div class="col-md-10"><input type="text" id="email" placeholder="Cari menggunakan email anda..."></div>
+          <div class="col-md-2"><button id="loadData" class="btn btn-default">Cari</button></div>
+        </div>
+        <br>
+        <br>
+       <table class="table-hover" id="example" style="width:100%">
+         <thead>
+           <tr>
+             <td>No</td>
+             <td>Nama</td>
+             <td>Email</td>
+             <td>Action</td>
+           </tr>
+         </thead>
+         
+       </table>
+      </div>
+
+    </div>
+  </div>
+
+
+
+
+
+  <footer class="page-footer teal">
+    
+    <div class="footer-copyright">
+      <div class="container">
+      Copyright <a class="brown-text text-lighten-3">Kementerian Kesehatan RI</a>
+      </div>
+    </div>
+  </footer>
+
+
+  <!--  Scripts-->
+  <script src="js/materialize.js"></script>
+  <script src="js/init.js"></script>
+<script>
+  $(function() {
+  $("#example").DataTable({
+    "searching": false
+  });
+
+  $("#loadData").click(function() {
+    var email = $('#email').val()
+    loadData(email);
+  });
+
+  function loadData(email) {
+    $.ajax({
+      type: 'POST',
+      data:{email:email},
+      url: 'http://localhost/sertif/get_data.php',
+      dataType: 'json',
+      success: function (data) {
+        myJsonData = data;
+        populateDataTable(myJsonData);
+      },
+      error: function (e) {
+        console.log("There was an error with your request...");
+        console.log("error: " + JSON.stringify(e));
+      }
+    });
+  }
+
+  // populate the data table with JSON data
+  function populateDataTable(data) {
+    console.log("populating data table...");
+    // clear the table before populating it with more data
+    $("#example").DataTable().clear();
+    var count = Object.keys(data).length;
+    // var length = Object.keys(obj).length;
+var a =0;
+    for(var i = 1; i < count+1; i++) {
+
+      // You could also use an ajax property on the data table initialization
+      $('#example').dataTable().fnAddData( [
+        i,
+        data[a].nama,
+        data[a].email_address,
+        '<a href="'+data[a].link+'" class="btn-small waves-effect waves-light teal lighten-1" download> Download !!</a>'
+      ]);
+      a++;
+    }
+  }
+});
+
+</script>
+
+  </body>
+</html>
